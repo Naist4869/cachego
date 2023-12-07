@@ -1,6 +1,7 @@
 package cachego
 
 import (
+	"context"
 	"time"
 )
 
@@ -24,5 +25,15 @@ type (
 
 		// Save cache a value by key
 		Save(key string, value string, lifeTime time.Duration) error
+	}
+)
+
+type (
+	CtxCache interface {
+		Cache
+
+		FetchWithCtx(ctx context.Context, key string) (string, error)
+
+		SaveWithCtx(ctx context.Context, key string, value string, lifeTime time.Duration) error
 	}
 )

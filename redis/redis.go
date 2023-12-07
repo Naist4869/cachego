@@ -15,7 +15,7 @@ type redis struct {
 }
 
 // New creates an instance of Redis cache driver
-func New(driver rd.Cmdable) cachego.Cache {
+func New(driver rd.Cmdable) cachego.CtxCache {
 	return &redis{driver}
 }
 
@@ -33,6 +33,11 @@ func (r *redis) Delete(key string) error {
 // Fetch retrieves the cached value from key of the Redis storage
 func (r *redis) Fetch(key string) (string, error) {
 	return r.driver.Get(context.Background(), key).Result()
+}
+
+// FetchWithCtx retrieves the cached value from key of the Redis storage
+func (r *redis) FetchWithCtx(ctx context.Context, key string) (string, error) {
+	return r.driver.Get(ctx, key).Result()
 }
 
 // FetchMulti retrieves multiple cached value from keys of the Redis storage
@@ -61,4 +66,9 @@ func (r *redis) Flush() error {
 // Save a value in Redis storage by key
 func (r *redis) Save(key string, value string, lifeTime time.Duration) error {
 	return r.driver.Set(context.Background(), key, value, lifeTime).Err()
+}
+
+// SaveWithCtx a value in Redis storage by key
+func (r *redis) SaveWithCtx(ctx context.Context, key string, value string, lifeTime time.Duration) error {
+	return r.driver.Set(ctx, key, value, lifeTime).Err()
 }
